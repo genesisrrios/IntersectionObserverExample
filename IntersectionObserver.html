@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Intersection observer</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="hero" class="px-4 py-5 my-5 text-center" >
+            <h1 v-for="passanger in passangers" class="display-5 fw-bold">{{passanger.name}} - Total trips: {{passanger.trips}}</h1>
+            <br>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    </body>
+</html>
+<script>
+function callback (entries, observer) {
+    entries.forEach(entry => {
+        console.log(entry)
+        if(entry.isIntersecting){
+            vue.page = vue.page + 1;
+            vue.getPassangerList();
+        }
+    });
+}
+let vue = new Vue({
+  el:'#hero',
+  data: { 
+        page: 1,
+        passangers:[]
+  },
+  methods: {
+      getPassangerList: function () {
+          fetch(`https://api.instantwebtools.net/v1/passenger?page=${this.page}&size=100`) //https://www.instantwebtools.net/fake-rest-api
+              .then(res => res.json())
+              .then(data => {
+                this.passangers.push(...data.data)
+                })
+      }
+  },
+  mounted: function () {
+      this.getPassangerList();
+  },
+  created: function () {
+      let heroDiv = document.querySelector('#hero');
+      
+      let options = {
+          root: document.body,
+          threshold: 0.2
+      };
+
+      let observer = new IntersectionObserver(callback,options);
+      observer.observe(heroDiv);
+    }
+});
+</script>
+<style>
+    #hero{
+        height:100%;
+    }
+</style>
