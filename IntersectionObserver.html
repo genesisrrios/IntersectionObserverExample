@@ -30,7 +30,6 @@
 <script>
 function callback (entries, observer) {
     entries.forEach(entry => {
-        console.log(entry)
         if(entry.isIntersecting){
             vue.page = vue.page + 1;
             vue.getPassangerList();
