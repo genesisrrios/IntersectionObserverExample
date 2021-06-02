@@ -19,7 +19,7 @@
                 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
             <![endif]-->
             <div class="px-4 py-5 my-5 text-center">
-                <h1  v-for="passanger in passangers"  class="display-5 fw-bold">{{passanger.name}} - Total trips: {{passanger.trips}}</h1>
+                <h1  v-for="passenger in passengers"  class="display-5 fw-bold">{{passenger.name}} - Total trips: {{passenger.trips}}</h1>
                 <br>
             </div>
             <div id="observer" ></div>
@@ -28,11 +28,11 @@
     </body>
 </html>
 <script>
-function callback (entries, observer) {
+function callback (entries) {
     entries.forEach(entry => {
         if(entry.isIntersecting){
             vue.page = vue.page + 1;
-            vue.getPassangerList();
+            vue.getPassengerList();
         }
     });
 }
@@ -40,19 +40,19 @@ let vue = new Vue({
   el:'#app',
   data: { 
         page: 1,
-        passangers:[]
+        passengers:[]
   },
   methods: {
-      getPassangerList: function () {
+      getPassengerList: function () {
           fetch(`https://api.instantwebtools.net/v1/passenger?page=${this.page}&size=10`) //https://www.instantwebtools.net/fake-rest-api
               .then(res => res.json())
               .then(data => {
-                this.passangers.push(...data.data)
+                this.passengers.push(...data.data)
                 })
       }
   },
   mounted: function () {
-      this.getPassangerList();
+      this.getPassengerList();
       const options = {
           root: null,
           rootMargin: "0px",
